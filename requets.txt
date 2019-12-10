@@ -1,0 +1,152 @@
+******************
+create table service(
+ref_serv varchar(20) primary key,
+desi_serv varchar(20)
+);
+******************
+create table responsable (
+id_resp varchar(20) primary key,
+nom_resp varchar(20),
+prenom_resp varchar(20),
+email_resp varchar(20),
+tel_resp varchar(20),
+grade_resp varchar(20)
+);
+******************
+  create table occuper (
+  id_resp varchar(20) not null,
+  ref_serv varchar(20) not null,
+  date_occupation Date,
+  constraint pk_occuper primary key (id_resp,ref_serv)
+  );
+******************
+create table fournisseur(
+code_frs integer primary key,
+nom_frs varchar(20),
+addr_frs varchar(20),
+tel_frs varchar(20)
+);
+******************
+create table livraison (
+num_liv integer primary key,
+date_liv date,
+code_frs integer not null,
+constraint code_frs_frgn foreign key(code_frs) references fournisseur(code_frs)
+);
+******************
+create table materiel(
+ref_mat varchar(20) primary key,
+num_liv integer not null,
+ref_serv varchar(20) not null,
+desi_mat varchar(20),
+etat_mat varchar(20),
+date_achat date,
+date_affectation date,
+tva float,
+prixHT float,
+image_path varchar(256),
+constraint num_liv_frgn foreign key(num_liv) references livraison(num_liv),
+constraint ref_serv_frgn foreign key(ref_serv) references service(ref_serv)
+);
+
+******************
+create table emprunter (
+ref_serv varchar(20) not null,
+ref_mat varchar(20) not null,
+date_deb_emprunt date,
+date_fin_emprunt date,
+constraint pk_emprunter primary key(ref_serv,ref_mat)
+);
+******************
+create table catalogue (
+ref_classe varchar(20) primary key,
+code_frs integer not null,
+desi_classe varchar(20),
+marque varchar(20),
+prix_untaire float,
+constraint code_frs_frgn_cat foreign key(code_frs) references fournisseur(code_frs)
+);
+******************
+create table commande (
+num_comd integer primary key,
+code_frs integer not null,
+date_cmd date,
+constraint code_frs_frgn_cmd foreign key(code_frs) references fournisseur(code_frs)
+);
+******************
+create table demande(
+ref_demd varchar(20) primary key,
+num_cmd integer,
+ref_classe varchar(20),
+ref_serv varchar(20),
+type_demd varchar(20),
+date_demd date,
+etat_demd varchar(20),
+constraint num_cmd_frgn foreign key(num_cmd) references commande(num_comd),
+constraint ref_classe_frgn foreign key(ref_classe) references catalogue(ref_classe),
+constraint ref_serv_frgn_demd foreign key(ref_serv) references service(ref_serv)
+);
+******************
+create table type (
+num_type integer primary key,
+type_ou varchar(20)
+);
+******************
+create table ouvrage (
+ref_ouv integer primary key,
+num_type integer,
+titre varchar(30),
+isbn varchar(20),
+editeur_ouv varchar(20),
+date_edition date,
+constraint num_type_frgn foreign key(num_type) references type(num_type)
+);
+******************
+create table ecrire(
+num_aut integer,
+ref_ouv integer,
+constraint pk_ecrire primary key(num_aut,ref_ouv)
+);
+******************
+create table auteur(
+num_aut integer primary key,
+nom_aut varchar(20),
+prenom_aut varchar(20)
+);
+******************
+create table fileire (
+ref_fil varchar(20) primary key,
+desi_fil varchar(20)
+);
+******************
+create table emprunteur(
+num_emp integer primary key,
+ref_fil varchar(20),
+nom_emp varchar(20),
+prenom_emp varchar(20),
+tel_emp varchar(20),
+grade_emp varchar(20),
+email_emp varchar(20),
+constraint ref_fil_frgn foreign key(ref_fil) references fileire(ref_fil)
+);
+******************
+create table sanction (
+num_sanc integer primary key,
+num_emp integer,
+date_deb date,
+date_fin date,
+constraint num_emp_frgn foreign key(num_emp) references emprunteur(num_emp)
+);
+******************
+create table emprunt (
+id_emprunt integer primary key,
+id_resp varchar(20),
+num_emp integer,
+ref_ouv integer,
+deb_emprunt date,
+fin_emprunt date,
+constraint id_resp_frgn foreign key(id_resp) references responsable(id_resp),
+constraint num_emp_frgn_emprunt foreign key(num_emp) references emprunteur(num_emp),
+constraint ref_ouv_frgn foreign key(ref_ouv) references ouvrage(ref_ouv)
+);	
+******************
