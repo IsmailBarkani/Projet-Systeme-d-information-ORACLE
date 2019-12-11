@@ -41,3 +41,14 @@ set_block_property('display',default_where,x);
 **********************************
 chr(39)='
 ***********************************
+declare
+begin
+	if :login.username = 'ismail' and :login.password = 'limone' then
+		go_block('insert');
+	elsif :login.username = 'mohammed' and :login.password = 'limon' then
+		go_block('update');
+	else 
+		message('votre login ou mot de passe est incorrect');
+		message('votre login ou mot de passe est incorrect');
+	end if;
+end;
