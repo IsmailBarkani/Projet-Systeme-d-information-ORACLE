@@ -1,0 +1,43 @@
+go_block('name');    // had requete bach namchiw l canvas li tabe3 l bolck donnee dyal 'name' wala bach n reliyiw l button l block donnee dyal 'name'
+exit_form;
+next_record;
+previous_record;
+first_record;
+laste_record;
+***************
+
+insert into student values (:t1,:t2,:t3,:t4,:t5);
+commit;
+:t1:= null;
+:t2:= null;
+:t3:= null;
+:t4:= null;
+:t5:= null;
+
+************************
+select count(*)+1 into :t1 from student;
+
+
+***************************
+declare
+	x number;
+begin
+	x:=show_alert('delete');
+	if x=alert_button1 then
+		delete from student where id=:update.id;
+		commit;
+		execute_query;
+	else
+		null;
+	end if;
+end;
+*****************************
+set_block_property('display',order_by,:display.sort);
+declare 
+x varcharr(30);
+begin
+x:='name ='|| :searche.sear
+set_block_property('display',default_where,x);
+**********************************
+chr(39)='
+***********************************
