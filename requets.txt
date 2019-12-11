@@ -107,7 +107,7 @@ num_aut integer,
 ref_ouv integer,
 constraint pk_ecrire primary key(num_aut,ref_ouv)
 );
-******************
+*****************
 create table auteur(
 num_aut integer primary key,
 nom_aut varchar(20),
