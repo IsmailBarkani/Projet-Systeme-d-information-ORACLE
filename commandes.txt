@@ -52,3 +52,21 @@ begin
 		message('votre login ou mot de passe est incorrect');
 	end if;
 end;
+**************************************
+declare
+	CURSOR c_affec is
+			select ref_mat,desi_mat,etat_mat,date_achat,date_affectation,tva,prixht from materiel;
+begin
+	open c_affec;
+	LOOP
+		fetch c_affec into :materiel.ref_mat,:materiel.desi_mat,:materiel.etat_mat,:materiel.date_achat,:materiel.affectation,:materiel.tva,:materiel.prixht;
+		exit when c_affec%notfound;
+			if :materiel.affectation is null then
+				:materiel.affectation := 'non affecter';
+			else :materiel.affectation :='affecter';
+			end if;
+			next_record;
+	end loop;
+	first_record;
+	close c_affec;
+end;
