@@ -54,6 +54,29 @@ begin
 end;
 **************************************
 declare
+	date_temp date := SYSDATE;
+	CURSOR c_affec is
+			select ref_mat,ref_serv,desi_mat,etat_mat,date_achat,date_affectation,tva,prixht from materiel;
+begin
+	open c_affec;
+	LOOP
+		fetch c_affec into :materiel.ref_mat,:materiel.service,:materiel.desi_mat,:materiel.etat_mat,:materiel.date_achat,:materiel.affectation,:materiel.tva,:materiel.prixht;
+		exit when c_affec%notfound;
+		select desi_serv into :materiel.service from service where ref_serv = :materiel.service;
+			if :materiel.affectation is null then
+				:materiel.affectation := 'non affecter';
+			else :materiel.affectation :='affecter';
+			end if;
+				:materiel.de := to_date('2010/01/01','yyyy/mm/dd');
+				:materiel.a := add_months(to_date(date_temp,'yy/mm/dd'),72);
+			next_record;
+	end loop;
+	first_record;
+	close c_affec;
+
+end;
+**************************************
+declare
 	CURSOR c_affec is
 			select ref_mat,desi_mat,etat_mat,date_achat,date_affectation,tva,prixht from materiel;
 begin
@@ -67,44 +90,6 @@ begin
 			end if;
 			next_record;
 	end loop;
-	first_record;
-	close c_affec;
-end;
-****************************************
-
-declare
-	x number;
-	test varchar(200);
-	CURSOR c_affec is
-			select ref_mat from materiel where desi_mat like '%' ||:materiel.designation||'%' and date_achat between :materiel.de and :materiel.a and ref_serv in(
-			
-				select ref_serv from service where desi_serv like '%' ||:materiel.departement||'%');
-begin
-   loop
-   	:materiel.ref_mat:=null;
-   	:materiel.desi_mat:=null;
-   	:materiel.service:=null;
-   	:materiel.etat_mat:=null;
-   	:materiel.date_achat:=null;
-   	:materiel.tva:=null;
-   	:materiel.prixht:=null;
-   	:materiel.affectation:=null;
-   	exit when :System.last_record ='TRUE';
-   	next_record;
-   end loop;
-   first_record;
-   	open c_affec;
-	LOOP
-			fetch c_affec into test;
-			exit when c_affec%notfound;
-			select ref_mat,ref_serv,desi_mat,etat_mat,date_achat,date_affectation,tva,prixht into :materiel.ref_mat,:materiel.service,:materiel.desi_mat,:materiel.etat_mat,:materiel.date_achat,:materiel.affectation,:materiel.tva,:materiel.prixht from materiel where ref_mat = test;
-			select desi_serv into :materiel.service from service where ref_serv = :materiel.service;
-				if :materiel.affectation is null then
-					:materiel.affectation := 'non affecter';
-				else :materiel.affectation :='affecter';
-				end if;
-				next_record;	
-		end loop;
 	first_record;
 	close c_affec;
 end;
