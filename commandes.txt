@@ -93,3 +93,43 @@ begin
 	first_record;
 	close c_affec;
 end;
+**************************************
+
+declare
+begin
+			select ref_mat,num_liv,desi_mat,etat_mat,date_achat,tva,prixht
+			into :materieldetaille.ref_mat,:materieldetaille.num_liv,:materieldetaille.desi_mat,:materieldetaille.etat_mat,
+			:materieldetaille.date_achat,:materieldetaille.tva,:materieldetaille.prixht from materiel
+			 where ref_mat = :materiel.ref_mat;
+			 
+			 :materieldetaille.departement := :materiel.service;
+			 if :materiel.affectation = null then
+			 	:materieldetaille.affectation := 'Non';
+			 	:materieldetaille.date_affectation := 'non encore affecter';
+			 else
+			 	:materieldetaille.affectation := 'Oui';
+			 	select date_affectation into :materieldetaille.date_affectation from materiel where ref_mat = :materieldetaille.ref_mat;
+			 end if;
+			 
+			 select ref_serv , date_deb_emprunt, date_fin_emprunt into :empruntermaterieldetaille.departementemp,:materieldetaille.date_deb,:materieldetaille.date_fin from emprunter where ref_mat = :materiel.ref_mat and SYSDATE < date_fin_emprunt;
+			 if :empruntermaterieldetaille.departementemp = null then
+			 	:empruntermaterieldetaille.departementemp := 'Aucun';
+			 	:empruntermaterieldetaille.emprunt := 'Non';
+			 	:materieldetaille.date_deb := SYSDATE;
+			 	:materieldetaille.date_fin := SYSDATE;
+			 else 
+			 	select desi_serv into :empruntermaterieldetaille.departementemp from service where ref_serv = :empruntermaterieldetaille.departementemp;
+				:empruntermaterieldetaille.emprunt := 'Oui';
+			 end if;
+			 go_block('materieldetaille');
+			 EXCEPTION
+  				WHEN NO_DATA_FOUND THEN
+    				:empruntermaterieldetaille.departementemp := 'Aucun';
+			 			:empruntermaterieldetaille.emprunt := 'Non';
+			 			:materieldetaille.date_deb := SYSDATE;
+			 			:materieldetaille.date_fin := SYSDATE;
+			 			go_block('materieldetaille');
+end;
+********************************************
+read_image_file('C:\Users\hp\projets_S3\projet_si\realisation\images\'||:materieldetaille.ref_mat||'.jpg','jpeg','image_mat');
+******************************************** 	
