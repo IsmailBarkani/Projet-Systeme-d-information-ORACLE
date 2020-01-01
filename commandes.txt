@@ -1,0 +1,135 @@
+go_block('name');    // had requete bach namchiw l canvas li tabe3 l bolck donnee dyal 'name' wala bach n reliyiw l button l block donnee dyal 'name'
+exit_form;
+next_record;
+previous_record;
+first_record;
+laste_record;
+***************
+
+insert into student values (:t1,:t2,:t3,:t4,:t5);
+commit;
+:t1:= null;
+:t2:= null;
+:t3:= null;
+:t4:= null;
+:t5:= null;
+
+************************
+select count(*)+1 into :t1 from student;
+
+
+***************************
+declare
+	x number;
+begin
+	x:=show_alert('delete');
+	if x=alert_button1 then
+		delete from student where id=:update.id;
+		commit;
+		execute_query;
+	else
+		null;
+	end if;
+end;
+*****************************
+set_block_property('display',order_by,:display.sort);
+declare 
+x varcharr(30);
+begin
+x:='name ='|| :searche.sear
+set_block_property('display',default_where,x);
+**********************************
+chr(39)='
+***********************************
+declare
+begin
+	if :login.username = 'ismail' and :login.password = 'limone' then
+		go_block('insert');
+	elsif :login.username = 'mohammed' and :login.password = 'limon' then
+		go_block('update');
+	else 
+		message('votre login ou mot de passe est incorrect');
+		message('votre login ou mot de passe est incorrect');
+	end if;
+end;
+**************************************
+declare
+	date_temp date := SYSDATE;
+	CURSOR c_affec is
+			select ref_mat,ref_serv,desi_mat,etat_mat,date_achat,date_affectation,tva,prixht from materiel;
+begin
+	open c_affec;
+	LOOP
+		fetch c_affec into :materiel.ref_mat,:materiel.service,:materiel.desi_mat,:materiel.etat_mat,:materiel.date_achat,:materiel.affectation,:materiel.tva,:materiel.prixht;
+		exit when c_affec%notfound;
+		select desi_serv into :materiel.service from service where ref_serv = :materiel.service;
+			if :materiel.affectation is null then
+				:materiel.affectation := 'non affecter';
+			else :materiel.affectation :='affecter';
+			end if;
+				:materiel.de := to_date('2010/01/01','yyyy/mm/dd');
+				:materiel.a := add_months(to_date(date_temp,'yy/mm/dd'),72);
+			next_record;
+	end loop;
+	first_record;
+	close c_affec;
+
+end;
+**************************************
+declare
+	CURSOR c_affec is
+			select ref_mat,desi_mat,etat_mat,date_achat,date_affectation,tva,prixht from materiel;
+begin
+	open c_affec;
+	LOOP
+		fetch c_affec into :materiel.ref_mat,:materiel.desi_mat,:materiel.etat_mat,:materiel.date_achat,:materiel.affectation,:materiel.tva,:materiel.prixht;
+		exit when c_affec%notfound;
+			if :materiel.affectation is null then
+				:materiel.affectation := 'non affecter';
+			else :materiel.affectation :='affecter';
+			end if;
+			next_record;
+	end loop;
+	first_record;
+	close c_affec;
+end;
+**************************************
+
+declare
+begin
+			select ref_mat,num_liv,desi_mat,etat_mat,date_achat,tva,prixht
+			into :materieldetaille.ref_mat,:materieldetaille.num_liv,:materieldetaille.desi_mat,:materieldetaille.etat_mat,
+			:materieldetaille.date_achat,:materieldetaille.tva,:materieldetaille.prixht from materiel
+			 where ref_mat = :materiel.ref_mat;
+			 
+			 :materieldetaille.departement := :materiel.service;
+			 if :materiel.affectation = null then
+			 	:materieldetaille.affectation := 'Non';
+			 	:materieldetaille.date_affectation := 'non encore affecter';
+			 else
+			 	:materieldetaille.affectation := 'Oui';
+			 	select date_affectation into :materieldetaille.date_affectation from materiel where ref_mat = :materieldetaille.ref_mat;
+			 end if;
+			 
+			 select ref_serv , date_deb_emprunt, date_fin_emprunt into :empruntermaterieldetaille.departementemp,:materieldetaille.date_deb,:materieldetaille.date_fin from emprunter where ref_mat = :materiel.ref_mat and SYSDATE < date_fin_emprunt;
+			 if :empruntermaterieldetaille.departementemp = null then
+			 	:empruntermaterieldetaille.departementemp := 'Aucun';
+			 	:empruntermaterieldetaille.emprunt := 'Non';
+			 	:materieldetaille.date_deb := SYSDATE;
+			 	:materieldetaille.date_fin := SYSDATE;
+			 else 
+			 	select desi_serv into :empruntermaterieldetaille.departementemp from service where ref_serv = :empruntermaterieldetaille.departementemp;
+				:empruntermaterieldetaille.emprunt := 'Oui';
+			 end if;
+			 go_block('materieldetaille');
+			 EXCEPTION
+  				WHEN NO_DATA_FOUND THEN
+    				:empruntermaterieldetaille.departementemp := 'Aucun';
+			 			:empruntermaterieldetaille.emprunt := 'Non';
+			 			:materieldetaille.date_deb := SYSDATE;
+			 			:materieldetaille.date_fin := SYSDATE;
+			 			go_block('materieldetaille');
+end;
+********************************************
+read_image_file('C:\Users\hp\projets_S3\projet_si\realisation\images\'||:materieldetaille.ref_mat||'.jpg','jpeg','image_mat');
+******************************************** 	
