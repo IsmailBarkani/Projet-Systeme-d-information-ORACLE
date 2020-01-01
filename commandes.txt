@@ -1,81 +1,151 @@
 go_block('name');    // had requete bach namchiw l canvas li tabe3 l bolck donnee dyal 'name' wala bach n reliyiw l button l block donnee dyal 'name'
+
 exit_form;
+
 next_record;
+
 previous_record;
+
 first_record;
+
 laste_record;
+
 ***************
 
+
 insert into student values (:t1,:t2,:t3,:t4,:t5);
+
 commit;
+
 :t1:= null;
+
 :t2:= null;
+
 :t3:= null;
+
 :t4:= null;
+
 :t5:= null;
 
+
 ************************
+
 select count(*)+1 into :t1 from student;
 
 
+
 ***************************
+
 declare
+
 	x number;
+
 begin
-	x:=show_alert('delete');
+	
+x:=show_alert('delete');
+
 	if x=alert_button1 then
+
 		delete from student where id=:update.id;
+
 		commit;
-		execute_query;
+	
+	execute_query;
+
 	else
-		null;
-	end if;
+	
+	null;
+	
+end if;
+
 end;
+
 *****************************
+
 set_block_property('display',order_by,:display.sort);
+
 declare 
 x varcharr(30);
 begin
 x:='name ='|| :searche.sear
 set_block_property('display',default_where,x);
+
 **********************************
+
 chr(39)='
+
 ***********************************
+
 declare
+
 begin
-	if :login.username = 'ismail' and :login.password = 'limone' then
+	
+if :login.username = 'ismail' and :login.password = 'limone' then
+
 		go_block('insert');
+
 	elsif :login.username = 'mohammed' and :login.password = 'limon' then
+
 		go_block('update');
-	else 
-		message('votre login ou mot de passe est incorrect');
-		message('votre login ou mot de passe est incorrect');
-	end if;
-end;
-**************************************
-declare
-	date_temp date := SYSDATE;
-	CURSOR c_affec is
-			select ref_mat,ref_serv,desi_mat,etat_mat,date_achat,date_affectation,tva,prixht from materiel;
-begin
-	open c_affec;
-	LOOP
-		fetch c_affec into :materiel.ref_mat,:materiel.service,:materiel.desi_mat,:materiel.etat_mat,:materiel.date_achat,:materiel.affectation,:materiel.tva,:materiel.prixht;
-		exit when c_affec%notfound;
-		select desi_serv into :materiel.service from service where ref_serv = :materiel.service;
-			if :materiel.affectation is null then
-				:materiel.affectation := 'non affecter';
-			else :materiel.affectation :='affecter';
-			end if;
-				:materiel.de := to_date('2010/01/01','yyyy/mm/dd');
-				:materiel.a := add_months(to_date(date_temp,'yy/mm/dd'),72);
-			next_record;
-	end loop;
-	first_record;
-	close c_affec;
+	
+else 
+		
+message('votre login ou mot de passe est incorrect');
+	
+	message('votre login ou mot de passe est incorrect');
+	
+end if;
 
 end;
+
 **************************************
+
+declare
+	date_temp date := SYSDATE;
+	
+CURSOR c_affec is
+		
+	select ref_mat,ref_serv,desi_mat,etat_mat,date_achat,date_affectation,tva,prixht from materiel;
+
+begin
+	
+open c_affec;
+	
+LOOP
+		
+fetch c_affec into :materiel.ref_mat,:materiel.service,:materiel.desi_mat,:materiel.etat_mat,:materiel.date_achat,
+:materiel.affectation,:materiel.tva,:materiel.prixht;
+
+		exit when c_affec%notfound;
+
+		select desi_serv into :materiel.service from service 
+where ref_serv = :materiel.service;
+	
+		if :materiel.affectation is null then
+
+				:materiel.affectation := 'non affecter';
+
+			else :materiel.affectation :='affecter';
+
+			end if;
+		
+		:materiel.de := to_date('2010/01/01','yyyy/mm/dd');
+	
+			:materiel.a := add_months(to_date(date_temp,'yy/mm/dd'),72);
+
+			next_record;
+	
+end loop;
+	
+first_record;
+	
+close c_affec;
+
+
+end;
+
+**************************************
+
 declare
 	CURSOR c_affec is
 			select ref_mat,desi_mat,etat_mat,date_achat,date_affectation,tva,prixht from materiel;
