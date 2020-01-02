@@ -210,4 +210,35 @@ begin
 end;
 ********************************************
 read_image_file('C:\Users\hp\projets_S3\projet_si\realisation\images\'||:materieldetaille.ref_mat||'.jpg','jpeg','image_mat');
-******************************************** 	
+******************************************** 
+
+declare
+	x number;
+	test varchar(200);
+	CURSOR c_dept is
+			select ref_serv from service where desi_serv like '%' ||:departement.departement||'%' and ref_serv like '%' ||:departement.ref_dept||'%' and ref_resp like '%' ||:departement.ref_respp||'%' and ref_resp in(
+			
+				select id_resp from responsable where nom_resp like '%' ||:departement.nom_responsable||'%');
+begin
+   loop
+   	:departement.ref_serv := null;
+   	:departement.desi_serv := null;
+   	:departement.id_resp := null;
+   	:departement.nom_resp := null;
+   	:departement.prenom_resp := null;
+   	:departement.email_resp := null;
+   	exit when :System.last_record ='TRUE';
+   	next_record;
+   end loop;
+   first_record;
+   	open c_dept;
+	LOOP
+			fetch c_dept into test;
+			exit when c_dept%notfound;
+			select ref_serv,desi_serv,id_resp,nom_resp,prenom_resp,email_resp into :departement.ref_serv,:departement.desi_serv,:departement.id_resp,:departement.nom_resp,:departement.prenom_resp,:departement.email_resp from service ,responsable where ref_resp=id_resp and ref_serv = test;
+				next_record;	
+		end loop;
+	first_record;
+	close c_dept;
+end;
+****************************************	
