@@ -1,0 +1,7 @@
+FRM-30203: Absence d'élément dans le bloc RESPONSABLEDPT
+FRM-30407: Le bloc doit comporter un élément Base de données au minimum.
+Bloc : RESPONSABLEDPT
+FRM-30113: Le bloc doit comprendre un élément de base de données qui n'est pas en mode Requête seulement.
+Bloc : RESPONSABLEDPT
+
+Fichier d'application Forms C:\Users\hp\Desktop\Gestion-d-un-etablissement-master\gestionetablissementforms.fmx créé
