@@ -147,17 +147,25 @@ end;
 **************************************
 
 declare
+	date_temp date := SYSDATE;
+	cmp number;
+	i number :=0;
 	CURSOR c_affec is
-			select ref_mat,desi_mat,etat_mat,date_achat,date_affectation,tva,prixht from materiel;
+			select ref_mat,ref_serv,desi_mat,etat_mat,date_achat,date_affectation,tva,prixht from materiel;
 begin
+	select count(ref_mat) into cmp from materiel;
 	open c_affec;
 	LOOP
-		fetch c_affec into :materiel.ref_mat,:materiel.desi_mat,:materiel.etat_mat,:materiel.date_achat,:materiel.affectation,:materiel.tva,:materiel.prixht;
-		exit when c_affec%notfound;
+		i:=i+1;
+		fetch c_affec into :materiel.ref_mat,:materiel.service,:materiel.desi_mat,:materiel.etat_mat,:materiel.date_achat,:materiel.affectation,:materiel.tva,:materiel.prixht;
+		exit when c_affec%notfound or cmp=i;
+		select desi_serv into :materiel.service from service where ref_serv = :materiel.service;
 			if :materiel.affectation is null then
 				:materiel.affectation := 'non affecter';
 			else :materiel.affectation :='affecter';
 			end if;
+				:materiel.de := to_date('2010/01/01','yyyy/mm/dd');
+				:materiel.a := add_months(to_date(date_temp,'yy/mm/dd'),72);
 			next_record;
 	end loop;
 	first_record;
