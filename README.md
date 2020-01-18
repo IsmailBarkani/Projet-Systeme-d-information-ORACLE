@@ -1,7 +1,9 @@
 # Gestion-d-un-etablissement
-### Oracle forms Builder
-### SQL Developper
-## Demo 
+## Outils:
+#### PowerAMC (conception et analyse MERISE)
+#### Oracle forms Builder 11g ( Forms & triggers)
+#### Oracle SQL Developper ( Gérer la base de données) 
+## Demo: 
 ![alt text](https://user-images.githubusercontent.com/51321011/72634841-ba61cc00-395b-11ea-87a0-b4d967af517b.JPG)
 ![alt text](https://user-images.githubusercontent.com/51321011/72634890-de251200-395b-11ea-8c1d-9bfebd67b642.JPG)
 ![alt text](https://user-images.githubusercontent.com/51321011/72634891-debda880-395b-11ea-97b2-1bb07c1d5aec.JPG)
