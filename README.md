@@ -3,6 +3,7 @@
 #### PowerAMC (conception et analyse MERISE)
 #### Oracle forms Builder 11g ( Forms & triggers)
 #### Oracle SQL Developper ( Gérer la base de données) 
+#### PS CS6
 ## Demo: 
 ![alt text](https://user-images.githubusercontent.com/51321011/72634841-ba61cc00-395b-11ea-87a0-b4d967af517b.JPG)
 ![alt text](https://user-images.githubusercontent.com/51321011/72634890-de251200-395b-11ea-8c1d-9bfebd67b642.JPG)
